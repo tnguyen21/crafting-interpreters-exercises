@@ -2,3 +2,6 @@
 jlox/.idea/*
 jlox/*.iml
 jlox/out
+
+*.exe
+*.out
