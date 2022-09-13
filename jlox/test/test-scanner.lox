@@ -1,0 +1,40 @@
+// this is a comment
+(( )) {} // grouping stuff
+
+!*+-/=<> <= == >= // operators
+
+"string literal test" // this should have type STRING, with value of characters within quotes
+
+"multiline
+string
+literal" // lox allows multiline string literals
+
+// testing number literals
+123
+123.45
+0.123
+
+// testing key words
+and
+class
+else
+false
+for
+fun
+if
+nil
+or
+print
+return
+super
+this
+true
+var
+while
+
+// testing idenfitiers
+
+var some_var_name
+var pi
+a
+b
