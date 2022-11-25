@@ -6,5 +6,6 @@ jlox/out
 *.exe
 *.out
 *.o
+clox
 
 .vscode
