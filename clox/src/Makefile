@@ -1,6 +1,6 @@
 .SUFFIXES : .c .o
 
-OBJECTS = main.o chunk.o memory.o debug.o value.o vm.o compiler.o scanner.o object.o
+OBJECTS = main.o chunk.o memory.o debug.o value.o vm.o compiler.o scanner.o object.o table.o
 
 CC = gcc
 CFLAGS = -c
@@ -20,5 +20,6 @@ debug.o : debug.h debug.c
 memory.o : memory.h memory.c
 object.o : object.h object.c	
 scanner.o : scanner.h scanner.c
+table.o : table.h table.c
 value.o : value.h value.c
 vm.o : vm.h vm.c
