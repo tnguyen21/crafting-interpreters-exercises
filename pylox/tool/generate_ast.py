@@ -9,7 +9,6 @@ def define_ast(
     with open(path, "w") as f:
         f.write("from my_token import Token\n\n")
         f.write("class " + base_name.capitalize() + ":\n")
-        # f.write("    pass\n\n")
         f.write("    def accept(self, visitor):\n")
         f.write("        method_name = 'visit_' + self.__class__.__name__.lower()\n")
         f.write("        method = getattr(visitor, method_name)\n")
@@ -48,8 +47,6 @@ def define_type(
         name = field.split(":")[0]
         f.write("        self." + name + " = " + name + "\n")
     f.write("\n")
-    # f.write("    def accept(self, visitor):\n")
-    # f.write("        return visitor.visit_" + class_name.lower() + "_" + base_name.lower() + "(self)\n")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
