@@ -3,12 +3,17 @@ import sys
 
 from scanner import Scanner
 from my_parser import Parser
+from interpreter import Interpreter
 from my_token import Token
 from token_type import TokenType
 from ast_printer import AstPrinter
+from runtime_error import RuntimeError
 
 class Lox:
-    hadError = False
+    def __init__(self):
+        self.interpreter = Interpreter(self)
+        self.had_error = False
+        self.had_runtime_error = False
 
     def main(self, args: list[str]):
         if len(args) > 1:
@@ -20,18 +25,17 @@ class Lox:
             self.runPrompt()
 
     def runFile(self, path: Path):
-        with open(path) as f:
-            self.run(f.read())
-
-        if self.hadError:
-            sys.exit(65)
+        with open(path) as f: self.run(f.read())
+        
+        if self.had_error:         sys.exit(65)
+        if self.had_runtime_error: sys.exit(70)
 
     def runPrompt(self):
         try:
             while True:
                 line = input("pylox > ")
                 self.run(line)
-                self.hadError = False
+                self.had_error = False
         except KeyboardInterrupt:
             print()
             sys.exit(0)
@@ -42,15 +46,19 @@ class Lox:
         parser = Parser(self, tokens)
         expression = parser.parse()
 
-        if self.hadError: return
+        if self.had_error: return
 
-        print(AstPrinter().print(expression))
+        self.interpreter.interpret(expression)
 
     def error(self, line: int, msg: str, token: Token = None):
         if token is None:               self.report(line, "", msg)
         if token.type == TokenType.EOF: self.report(token.line, " at end", msg)
         else:                           self.report(token.line, f" at '{token.lexeme}'", msg)
 
+    def runtime_error(self, error: RuntimeError):
+        print(error)
+        self.had_runtime_error = True
+
     def report(self, line: int, where: str, msg: str):
         print(f"[line {line}] Error{where}: {msg}")
-        self.hadError = True
+        self.had_error = True
