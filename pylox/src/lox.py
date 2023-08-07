@@ -2,7 +2,10 @@ from pathlib import Path
 import sys
 
 from scanner import Scanner
-
+from my_parser import Parser
+from my_token import Token
+from token_type import TokenType
+from ast_printer import AstPrinter
 
 class Lox:
     hadError = False
@@ -36,12 +39,17 @@ class Lox:
     def run(self, source: str):
         scanner = Scanner(self, source)
         tokens = scanner.scan_tokens()
+        parser = Parser(self, tokens)
+        expression = parser.parse()
 
-        for token in tokens:
-            print(token)
+        if self.hadError: return
 
-    def error(self, line: int, msg: str):
-        self.report(line, "", msg)
+        print(AstPrinter().print(expression))
+
+    def error(self, line: int, msg: str, token: Token = None):
+        if token is None:               self.report(line, "", msg)
+        if token.type == TokenType.EOF: self.report(token.line, " at end", msg)
+        else:                           self.report(token.line, f" at '{token.lexeme}'", msg)
 
     def report(self, line: int, where: str, msg: str):
         print(f"[line {line}] Error{where}: {msg}")
