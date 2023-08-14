@@ -30,8 +30,7 @@ def define_visitor(
     f.write("class Visitor:\n")
     for type in types:
         type_name = type.split("=")[0].strip()
-        f.write("    def visit_" + type_name.lower() + "(self, " + base_name.lower() + ": " + type_name + "):\n")
-        f.write("        pass\n")
+        f.write("    def visit_" + type_name.lower() + "(self, " + base_name.lower() + ": " + type_name + "): pass\n")
     f.write("\n")
 
 def define_type(
