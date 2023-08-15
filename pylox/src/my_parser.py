@@ -1,6 +1,7 @@
 from token_type import TokenType
 from my_token import Token
 from expr import *
+from stmt import *
 
 class ParseError(Exception):
     pass
@@ -11,14 +12,28 @@ class Parser:
         self.tokens = tokens
         self.current = 0
 
-    def parse(self) -> Expr:
-        try:
-            return self.expression()
-        except ParseError:
-            return None
-    
+    def parse(self) -> [Expr]:
+        stmts = []
+        while not self.is_at_end(): stmts.append(self.statement())
+        return stmts
+
     def expression(self) -> Expr:
         return self.equality()
+
+    def statement(self) -> Stmt:
+        if self.match(TokenType.PRINT): return self.print_statement()
+
+        return self.expression_statement()
+    
+    def print_statement(self) -> Stmt:
+        value = self.expression()
+        self.consume(TokenType.SEMICOLON, "Expect ';' after value.")
+        return Print(value)
+
+    def expression_statement(self) -> Stmt:
+        expr = self.expression()
+        self.consume(TokenType.SEMICOLON, "Expect ';' after expression.")
+        return Expression(expr)
 
     def equality(self) -> Expr:
         expr = self.comparison()

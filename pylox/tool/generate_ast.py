@@ -3,10 +3,12 @@ import sys
 def define_ast(
     output_dir: str,
     base_name: str,
-    types: list[str]
+    types: list[str],
+    is_stmt: bool = False
 ):
     path = output_dir + "/" + base_name + ".py"
     with open(path, "w") as f:
+        if is_stmt: f.write("from expr import Expr\n")
         f.write("from my_token import Token\n\n")
         f.write("class " + base_name.capitalize() + ":\n")
         f.write("    def accept(self, visitor):\n")
@@ -60,3 +62,8 @@ if __name__ == "__main__":
         "Literal  = value: object",
         "Unary    = operator: Token, right: Expr"
     ])
+
+    define_ast(output_dir, "stmt", [
+        "Expression = expr: Expr",
+        "Print      = expr: Expr"
+    ], is_stmt=True)

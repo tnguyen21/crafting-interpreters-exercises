@@ -1,15 +1,15 @@
 from token_type import TokenType
-from expr import Visitor
+from expr import Visitor as ExprVisitor
+from stmt import Visitor as StmtVisitor
 from runtime_error import RuntimeError
 
-class Interpreter(Visitor):
+class Interpreter(ExprVisitor, StmtVisitor):
     def __init__(self, lox_instance):
         self.lox = lox_instance
 
-    def interpret(self, expression):
+    def interpret(self, statements):
         try:
-            value = self.evaluate(expression)
-            print(self.stringify(value))
+            for statement in statements: self.execute(statement)
         except RuntimeError as e:
             self.lox.runtime_error(e)
 
@@ -75,7 +75,17 @@ class Interpreter(Visitor):
 
     def evaluate(self, expr):
         return expr.accept(self)
-
+    
+    def execute(self, stmt):
+        stmt.accept(self)
+    
+    def visit_expression(self, stmt):
+        self.evaluate(stmt.expr)
+    
+    def visit_print(self, stmt):
+        value = self.evaluate(stmt.expr)
+        print(self.stringify(value))
+    
     def is_truthy(self, obj):
         if obj is None:             return False
         elif isinstance(obj, bool): return obj
