@@ -7,6 +7,10 @@ class Stmt:
         method = getattr(visitor, method_name)
         return method(self)
 
+class Block(Stmt):
+    def __init__(self, statements: [Stmt]):
+        self.statements = statements
+
 class Expression(Stmt):
     def __init__(self, expr: Expr):
         self.expr = expr
@@ -15,19 +19,14 @@ class Print(Stmt):
     def __init__(self, expr: Expr):
         self.expr = expr
 
-class Unary(Stmt):
-    def __init__(self, operator: Token, right: Expr):
-        self.operator = operator
-        self.right = right
-
-class Variable(Stmt):
+class Var(Stmt):
     def __init__(self, name: Token, initializer: Expr):
         self.name = name
         self.initializer = initializer
 
 class Visitor:
+    def visit_block(self, stmt: Block): pass
     def visit_expression(self, stmt: Expression): pass
     def visit_print(self, stmt: Print): pass
-    def visit_unary(self, stmt: Unary): pass
-    def visit_variable(self, stmt: Variable): pass
+    def visit_var(self, stmt: Var): pass
 

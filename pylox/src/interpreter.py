@@ -1,11 +1,13 @@
 from token_type import TokenType
-from expr import Visitor as ExprVisitor
-from stmt import Visitor as StmtVisitor
+from expr import Assign, Visitor as ExprVisitor
+from stmt import Block, Visitor as StmtVisitor
 from runtime_error import RuntimeError
+from environment import Environment
 
 class Interpreter(ExprVisitor, StmtVisitor):
     def __init__(self, lox_instance):
         self.lox = lox_instance
+        self.environment = Environment()
 
     def interpret(self, statements):
         try:
@@ -64,6 +66,9 @@ class Interpreter(ExprVisitor, StmtVisitor):
             return -right
         elif expr.operator.type == TokenType.BANG:
             return not self.is_truthy(right)
+    
+    def visit_variable(self, expr):
+        return self.environment.get(expr.name)
 
     def check_number_operand(self, operator, operand):
         if isinstance(operand, float): return
@@ -79,12 +84,35 @@ class Interpreter(ExprVisitor, StmtVisitor):
     def execute(self, stmt):
         stmt.accept(self)
     
+    def execute_block(self, statements, environment):
+        previous = self.environment
+        try:
+            self.environment = environment
+            for statement in statements:
+                self.execute(statement)
+        finally:
+            self.environment = previous
+
+    def visit_block(self, stmt: Block):
+        self.execute_block(stmt.statements, Environment(self.environment))
+
     def visit_expression(self, stmt):
         self.evaluate(stmt.expr)
     
     def visit_print(self, stmt):
         value = self.evaluate(stmt.expr)
         print(self.stringify(value))
+
+    def visit_var(self, stmt):
+        value = None
+        if stmt.initializer is not None:
+            value = self.evaluate(stmt.initializer)
+        self.environment.define(stmt.name.lexeme, value)
+
+    def visit_assign(self, expr: Assign):
+        value = self.evaluate(expr.value)
+        self.environment.assign(expr.name, value)
+        return value
     
     def is_truthy(self, obj):
         if obj is None:             return False

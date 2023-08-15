@@ -56,15 +56,17 @@ if __name__ == "__main__":
     output_dir = sys.argv[1]
 
     define_ast(output_dir, "expr", [
+        "Assign   = name: Token, value: Expr",
         "Binary   = left: Expr, operator: Token, right: Expr",
         "Grouping = expr: Expr",
         "Literal  = value: object",
-        "Unary    = operator: Token, right: Expr"
+        "Unary    = operator: Token, right: Expr",
+        "Variable = name: Token"
     ])
 
     define_ast(output_dir, "stmt", [
+        "Block      = statements: [Stmt]",
         "Expression = expr: Expr",
         "Print      = expr: Expr",
-        "Unary      = operator: Token, right: Expr",
-        "Variable   = name: Token, initializer: Expr"
+        "Var        = name: Token, initializer: Expr",
     ], is_stmt=True)
