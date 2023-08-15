@@ -47,7 +47,6 @@ def define_type(
     for field in field_list:
         name = field.split(":")[0]
         f.write("        self." + name + " = " + name + "\n")
-    f.write("\n")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -65,5 +64,7 @@ if __name__ == "__main__":
 
     define_ast(output_dir, "stmt", [
         "Expression = expr: Expr",
-        "Print      = expr: Expr"
+        "Print      = expr: Expr",
+        "Unary      = operator: Token, right: Expr",
+        "Variable   = name: Token, initializer: Expr"
     ], is_stmt=True)
