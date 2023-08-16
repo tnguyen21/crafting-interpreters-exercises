@@ -9,6 +9,7 @@ class FunctionType(Enum):
     NONE = 0
     FUNCTION = 1
     METHOD = 2
+    INITIALIZER = 3
 
 class ClassType(Enum):
     NONE = 0
@@ -38,8 +39,7 @@ class Resolver(ExprVisitor, StmtVisitor):
 
         for method in stmt.methods:
             declaration = FunctionType.METHOD
-            # if method.name.lexeme == "init":
-            #     declaration = FunctionType.INITIALIZER
+            if method.name.lexeme == "init": declaration = FunctionType.INITIALIZER
             self.resolve_function(method, declaration)
         
         self.end_scope()
@@ -62,7 +62,11 @@ class Resolver(ExprVisitor, StmtVisitor):
     def visit_return(self, stmt):
         if self.current_function == FunctionType.NONE:
             raise RuntimeError(stmt.keyword, "Cannot return from top-level code.")
-        if stmt.value is not None: self.resolve(stmt.value)
+        if stmt.value is not None:
+            if self.current_function == FunctionType.INITIALIZER:
+                raise RuntimeError(stmt.keyword, "Cannot return a value from an initializer.")
+
+            self.resolve(stmt.value)
 
     def visit_var(self, stmt):
         self.declare(stmt.name)
