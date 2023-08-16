@@ -44,9 +44,9 @@ def define_type(
     f.write("class " + class_name + "(" + base_name + "):\n")
     f.write("    def __init__(self, " + fields + "):\n")
     field_list = fields.split(", ")
-    for field in field_list:
-        name = field.split(":")[0]
-        f.write("        self." + name + " = " + name + "\n")
+    names = [field.split(":")[0] for field in field_list]
+    self_names = ["self." + name for name in names]
+    f.write("        " + ",".join(self_names) + " = " + ",".join(names) + "\n")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

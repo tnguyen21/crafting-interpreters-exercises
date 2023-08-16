@@ -8,31 +8,23 @@ class Expr:
 
 class Assign(Expr):
     def __init__(self, name: Token, value: Expr):
-        self.name = name
-        self.value = value
+        self.name,self.value = name,value
 
 class Binary(Expr):
     def __init__(self, left: Expr, operator: Token, right: Expr):
-        self.left = left
-        self.operator = operator
-        self.right = right
+        self.left,self.operator,self.right = left,operator,right
 
 class Call(Expr):
     def __init__(self, callee: Expr, paren: Token, arguments: [Expr]):
-        self.callee = callee
-        self.paren = paren
-        self.arguments = arguments
+        self.callee,self.paren,self.arguments = callee,paren,arguments
 
 class Get(Expr):
     def __init__(self, object: Expr, name: Token):
-        self.object = object
-        self.name = name
+        self.object,self.name = object,name
 
 class Set(Expr):
     def __init__(self, object: Expr, name: Token, value: Expr):
-        self.object = object
-        self.name = name
-        self.value = value
+        self.object,self.name,self.value = object,name,value
 
 class Grouping(Expr):
     def __init__(self, expr: Expr):
@@ -44,14 +36,11 @@ class Literal(Expr):
 
 class Logical(Expr):
     def __init__(self, left: Expr, operator: Token, right: Expr):
-        self.left = left
-        self.operator = operator
-        self.right = right
+        self.left,self.operator,self.right = left,operator,right
 
 class Unary(Expr):
     def __init__(self, operator: Token, right: Expr):
-        self.operator = operator
-        self.right = right
+        self.operator,self.right = operator,right
 
 class This(Expr):
     def __init__(self, keyword: Token):
