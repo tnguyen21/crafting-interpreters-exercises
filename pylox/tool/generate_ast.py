@@ -70,6 +70,7 @@ if __name__ == "__main__":
         "Block      = statements: [Stmt]",
         "Expression = expr: Expr",
         "Function   = name: Token, params: [Token], body: [Stmt]",
+        "Class      = name: Token, methods: [Function]",
         "If         = condition: Expr, then_branch: Stmt, else_branch: Stmt",
         "Print      = expr: Expr",
         "Return     = keyword: Token, value: Expr",

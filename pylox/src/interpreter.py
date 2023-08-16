@@ -3,6 +3,7 @@ from expr import Assign, Visitor as ExprVisitor
 from stmt import Block, Visitor as StmtVisitor
 from lox_callable import LoxCallable
 from lox_function import LoxFunction
+from lox_class import LoxClass
 from native import Clock
 from runtime_error import RuntimeError
 from environment import Environment
@@ -139,6 +140,11 @@ class Interpreter(ExprVisitor, StmtVisitor):
 
     def visit_block(self, stmt: Block):
         self.execute_block(stmt.statements, Environment(self.environment))
+
+    def visit_class(self, stmt):
+        self.environment.define(stmt.name.lexeme, None)
+        klass = LoxClass(stmt.name.lexeme) #, None, stmt.methods)
+        self.environment.assign(stmt.name, klass)
 
     def visit_expression(self, stmt):
         self.evaluate(stmt.expr)

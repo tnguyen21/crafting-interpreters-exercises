@@ -21,6 +21,11 @@ class Function(Stmt):
         self.params = params
         self.body = body
 
+class Class(Stmt):
+    def __init__(self, name: Token, methods: [Function]):
+        self.name = name
+        self.methods = methods
+
 class If(Stmt):
     def __init__(self, condition: Expr, then_branch: Stmt, else_branch: Stmt):
         self.condition = condition
@@ -50,6 +55,7 @@ class Visitor:
     def visit_block(self, stmt: Block): pass
     def visit_expression(self, stmt: Expression): pass
     def visit_function(self, stmt: Function): pass
+    def visit_class(self, stmt: Class): pass
     def visit_if(self, stmt: If): pass
     def visit_print(self, stmt: Print): pass
     def visit_return(self, stmt: Return): pass
