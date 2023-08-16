@@ -172,7 +172,10 @@ class Parser:
             if isinstance(expr, Variable):
                 name = expr.name
                 return Assign(name, value)
-            
+            elif isinstance(expr, Get):
+                get = expr
+                return Set(get.object, get.name, value)
+
             self.error(equals, "Invalid assignment target.")
         
         return expr
@@ -266,6 +269,9 @@ class Parser:
         while True:
             if self.match(TokenType.LEFT_PAREN):
                 expr = self.finish_call(expr)
+            elif self.match(TokenType.DOT):
+                name = self.consume(TokenType.IDENTIFIER, "Expect property name after '.'.")
+                expr = Get(expr, name)
             else:
                 break
         
@@ -279,6 +285,8 @@ class Parser:
         if self.match(TokenType.NUMBER, TokenType.STRING):
             return Literal(self.previous().literal)
         
+        if self.match(TokenType.THIS): return This(self.previous())
+
         if self.match(TokenType.IDENTIFIER):
             return Variable(self.previous())
         

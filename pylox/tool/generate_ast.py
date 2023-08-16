@@ -59,10 +59,13 @@ if __name__ == "__main__":
         "Assign   = name: Token, value: Expr",
         "Binary   = left: Expr, operator: Token, right: Expr",
         "Call     = callee: Expr, paren: Token, arguments: [Expr]",
+        "Get      = object: Expr, name: Token",
+        "Set      = object: Expr, name: Token, value: Expr",
         "Grouping = expr: Expr",
         "Literal  = value: object",
         "Logical  = left: Expr, operator: Token, right: Expr",
         "Unary    = operator: Token, right: Expr",
+        "This     = keyword: Token",
         "Variable = name: Token"
     ])
 

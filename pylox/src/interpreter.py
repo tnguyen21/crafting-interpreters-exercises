@@ -4,6 +4,7 @@ from stmt import Block, Visitor as StmtVisitor
 from lox_callable import LoxCallable
 from lox_function import LoxFunction
 from lox_class import LoxClass
+from lox_instance import LoxInstance
 from native import Clock
 from runtime_error import RuntimeError
 from environment import Environment
@@ -77,6 +78,22 @@ class Interpreter(ExprVisitor, StmtVisitor):
 
         return function.call(self, arguments)
 
+    def visit_get(self, expr):
+        obj = self.evaluate(expr.object)
+        if isinstance(obj, LoxInstance): return obj.get(expr.name)
+        raise RuntimeError(f'Only instances have properties.')
+
+    def visit_set(self, expr):
+        obj = self.evaluate(expr.object)
+        if not isinstance(obj, LoxInstance):
+            raise RuntimeError(f'Only instances have fields.')
+        value = self.evaluate(expr.value)
+        obj.set(expr.name, value)
+        return value
+
+    def visit_this(self, expr):
+        return self.look_up_variable(expr.keyword, expr)
+
     def visit_grouping(self, expr):
         return self.evaluate(expr.expr)
 
@@ -143,7 +160,12 @@ class Interpreter(ExprVisitor, StmtVisitor):
 
     def visit_class(self, stmt):
         self.environment.define(stmt.name.lexeme, None)
-        klass = LoxClass(stmt.name.lexeme) #, None, stmt.methods)
+
+        methods = {}
+        for method in stmt.methods:
+            function = LoxFunction(method, self.environment)
+            methods[method.name.lexeme] = function
+        klass = LoxClass(stmt.name.lexeme, methods)
         self.environment.assign(stmt.name, klass)
 
     def visit_expression(self, stmt):

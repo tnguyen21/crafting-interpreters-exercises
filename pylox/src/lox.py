@@ -31,14 +31,16 @@ class Lox:
         if self.had_runtime_error: sys.exit(70)
 
     def runPrompt(self):
-        try:
-            while True:
+        while True:
+            try:
                 line = input("pylox > ")
                 self.run(line)
                 self.had_error = False
-        except KeyboardInterrupt:
-            print()
-            sys.exit(0)
+            except KeyboardInterrupt:
+                print()
+                sys.exit(0)
+            except RuntimeError as e:
+                self.runtime_error(e)
 
     def run(self, source: str):
         scanner = Scanner(self, source)
