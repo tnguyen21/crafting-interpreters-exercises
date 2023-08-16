@@ -3,6 +3,7 @@ import sys
 
 from scanner import Scanner
 from my_parser import Parser
+from resolver import Resolver
 from interpreter import Interpreter
 from my_token import Token
 from token_type import TokenType
@@ -45,6 +46,11 @@ class Lox:
         tokens = scanner.scan_tokens()
         parser = Parser(self, tokens)
         statements = parser.parse()
+
+        if self.had_error: return
+
+        resolver = Resolver(self.interpreter)
+        resolver.resolve(statements)
 
         if self.had_error: return
 
