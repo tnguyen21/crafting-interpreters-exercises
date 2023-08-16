@@ -1,4 +1,4 @@
-from expr import Expr
+from expr import Expr, Variable
 from my_token import Token
 
 class Stmt:
@@ -20,8 +20,8 @@ class Function(Stmt):
         self.name,self.params,self.body = name,params,body
 
 class Class(Stmt):
-    def __init__(self, name: Token, methods: [Function]):
-        self.name,self.methods = name,methods
+    def __init__(self, name: Token, superclass: Variable, methods: [Function]):
+        self.name,self.superclass,self.methods = name,superclass,methods
 
 class If(Stmt):
     def __init__(self, condition: Expr, then_branch: Stmt, else_branch: Stmt):

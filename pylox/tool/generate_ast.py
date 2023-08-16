@@ -8,7 +8,7 @@ def define_ast(
 ):
     path = output_dir + "/" + base_name + ".py"
     with open(path, "w") as f:
-        if is_stmt: f.write("from expr import Expr\n")
+        if is_stmt: f.write("from expr import Expr, Variable\n")
         f.write("from my_token import Token\n\n")
         f.write("class " + base_name.capitalize() + ":\n")
         f.write("    def accept(self, visitor):\n")
@@ -66,6 +66,7 @@ if __name__ == "__main__":
         "Logical  = left: Expr, operator: Token, right: Expr",
         "Unary    = operator: Token, right: Expr",
         "This     = keyword: Token",
+        "Super    = keyword: Token, method: Token"
         "Variable = name: Token"
     ])
 
@@ -73,7 +74,7 @@ if __name__ == "__main__":
         "Block      = statements: [Stmt]",
         "Expression = expr: Expr",
         "Function   = name: Token, params: [Token], body: [Stmt]",
-        "Class      = name: Token, methods: [Function]",
+        "Class      = name: Token, superclass: Variable, methods: [Function]",
         "If         = condition: Expr, then_branch: Stmt, else_branch: Stmt",
         "Print      = expr: Expr",
         "Return     = keyword: Token, value: Expr",
