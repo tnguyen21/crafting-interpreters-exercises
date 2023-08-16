@@ -69,3 +69,7 @@ class Lox:
     def report(self, line: int, where: str, msg: str):
         print(f"[line {line}] Error{where}: {msg}")
         self.had_error = True
+
+if __name__ == "__main__":
+    l = Lox()
+    l.main(sys.argv[1:])
