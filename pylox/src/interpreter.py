@@ -1,13 +1,20 @@
 from token_type import TokenType
 from expr import Assign, Visitor as ExprVisitor
 from stmt import Block, Visitor as StmtVisitor
+from lox_callable import LoxCallable
+from lox_function import LoxFunction
+from native import Clock
 from runtime_error import RuntimeError
 from environment import Environment
+from return_exception import Return
 
 class Interpreter(ExprVisitor, StmtVisitor):
     def __init__(self, lox_instance):
         self.lox = lox_instance
-        self.environment = Environment()
+        self.globals = Environment()
+        self.environment = self.globals
+
+        self.globals.define('clock', Clock())
 
     def interpret(self, statements):
         try:
@@ -51,6 +58,22 @@ class Interpreter(ExprVisitor, StmtVisitor):
         elif expr.operator.type == TokenType.EQUAL_EQUAL:
             self.check_number_operands(expr.operator, left, right)
             return self.is_equal(left, right)
+
+    def visit_call(self, expr):
+        callee = self.evaluate(expr.callee)
+
+        arguments = []
+        for argument in expr.arguments:
+            arguments.append(self.evaluate(argument))
+
+        if not isinstance(callee, LoxCallable):
+            raise RuntimeError(f'Can only call functions and classes.')
+
+        function = callee
+        if len(arguments) != function.arity():
+            raise RuntimeError(f'Expected {function.arity()} arguments but got {len(arguments)}.')
+
+        return function.call(self, arguments)
 
     def visit_grouping(self, expr):
         return self.evaluate(expr.expr)
@@ -109,6 +132,10 @@ class Interpreter(ExprVisitor, StmtVisitor):
     def visit_expression(self, stmt):
         self.evaluate(stmt.expr)
 
+    def visit_function(self, stmt):
+        function = LoxFunction(stmt, self.environment)
+        self.environment.define(stmt.name.lexeme, function)
+
     def visit_if(self, stmt):
         if self.is_truthy(self.evaluate(stmt.condition)):
             self.execute(stmt.then_branch)
@@ -118,6 +145,11 @@ class Interpreter(ExprVisitor, StmtVisitor):
     def visit_print(self, stmt):
         value = self.evaluate(stmt.expr)
         print(self.stringify(value))
+
+    def visit_return(self, stmt):
+        value = None
+        if stmt.value is not None: value = self.evaluate(stmt.value)
+        raise Return(value)
 
     def visit_var(self, stmt):
         value = None

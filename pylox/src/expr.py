@@ -17,6 +17,12 @@ class Binary(Expr):
         self.operator = operator
         self.right = right
 
+class Call(Expr):
+    def __init__(self, callee: Expr, paren: Token, arguments: [Expr]):
+        self.callee = callee
+        self.paren = paren
+        self.arguments = arguments
+
 class Grouping(Expr):
     def __init__(self, expr: Expr):
         self.expr = expr
@@ -43,6 +49,7 @@ class Variable(Expr):
 class Visitor:
     def visit_assign(self, expr: Assign): pass
     def visit_binary(self, expr: Binary): pass
+    def visit_call(self, expr: Call): pass
     def visit_grouping(self, expr: Grouping): pass
     def visit_literal(self, expr: Literal): pass
     def visit_logical(self, expr: Logical): pass

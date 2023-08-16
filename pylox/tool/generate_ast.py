@@ -58,6 +58,7 @@ if __name__ == "__main__":
     define_ast(output_dir, "expr", [
         "Assign   = name: Token, value: Expr",
         "Binary   = left: Expr, operator: Token, right: Expr",
+        "Call     = callee: Expr, paren: Token, arguments: [Expr]",
         "Grouping = expr: Expr",
         "Literal  = value: object",
         "Logical  = left: Expr, operator: Token, right: Expr",
@@ -68,8 +69,10 @@ if __name__ == "__main__":
     define_ast(output_dir, "stmt", [
         "Block      = statements: [Stmt]",
         "Expression = expr: Expr",
+        "Function   = name: Token, params: [Token], body: [Stmt]",
         "If         = condition: Expr, then_branch: Stmt, else_branch: Stmt",
         "Print      = expr: Expr",
+        "Return     = keyword: Token, value: Expr",
         "Var        = name: Token, initializer: Expr",
         "While      = condition: Expr, body: Stmt"
     ], is_stmt=True)
