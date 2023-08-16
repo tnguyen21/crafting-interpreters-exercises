@@ -7,7 +7,6 @@ from resolver import Resolver
 from interpreter import Interpreter
 from my_token import Token
 from token_type import TokenType
-from ast_printer import AstPrinter
 from runtime_error import RuntimeError
 
 class Lox:
