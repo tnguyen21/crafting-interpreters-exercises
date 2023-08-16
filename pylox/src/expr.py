@@ -46,6 +46,10 @@ class This(Expr):
     def __init__(self, keyword: Token):
         self.keyword = keyword
 
+class Super(Expr):
+    def __init__(self, keyword: Token, method: Token):
+        self.keyword,self.method = keyword,method
+
 class Variable(Expr):
     def __init__(self, name: Token):
         self.name = name
@@ -61,5 +65,6 @@ class Visitor:
     def visit_logical(self, expr: Logical): pass
     def visit_unary(self, expr: Unary): pass
     def visit_this(self, expr: This): pass
+    def visit_super(self, expr: Super): pass
     def visit_variable(self, expr: Variable): pass
 

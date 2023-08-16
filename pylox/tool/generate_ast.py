@@ -66,7 +66,7 @@ if __name__ == "__main__":
         "Logical  = left: Expr, operator: Token, right: Expr",
         "Unary    = operator: Token, right: Expr",
         "This     = keyword: Token",
-        "Super    = keyword: Token, method: Token"
+        "Super    = keyword: Token, method: Token",
         "Variable = name: Token"
     ])
 
