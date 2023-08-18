@@ -181,8 +181,8 @@ class Interpreter(ExprVisitor, StmtVisitor):
     def visit_expression(self, stmt): self.evaluate(stmt.expr)
 
     def visit_function(self, stmt):
-        function = LoxFunction(stmt, self.environment)
-        self.environment.define(stmt.name.lexeme, function, False)
+        function = LoxFunction(stmt, self.environment, False)
+        self.environment.define(stmt.name.lexeme, function)
 
     def visit_if(self, stmt):
         if self.is_truthy(self.evaluate(stmt.condition)):
