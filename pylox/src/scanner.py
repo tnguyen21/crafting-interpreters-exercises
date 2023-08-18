@@ -22,12 +22,8 @@ class Scanner:
     }
 
     def __init__(self, lox_instance, source: str):
-        self.lox = lox_instance
-        self.source = source
-        self.tokens: list[Token] = []
-        self.start = 0
-        self.current = 0
-        self.line = 1
+        self.lox,self.source,self.tokens = lox_instance,source,[]
+        self.start,self.current,self.line = 0,0,1
 
     def scan_tokens(self) -> list[Token]:
         while not self.is_at_end():
@@ -89,8 +85,7 @@ class Scanner:
 
         # Unterminated string.
         if self.is_at_end():
-            self.lox.error(self.line, "Unterminated string.")
-            return
+            self.lox.error(self.line, "Unterminated string."); return
 
         # The closing "
         self.advance()
