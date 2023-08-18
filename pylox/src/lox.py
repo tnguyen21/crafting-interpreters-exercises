@@ -11,18 +11,12 @@ from runtime_error import RuntimeError
 
 class Lox:
     def __init__(self):
-        self.interpreter = Interpreter(self)
-        self.had_error = False
-        self.had_runtime_error = False
+        self.interpreter,self.had_error,self.had_runtime_error = Interpreter(self),False,False
 
     def main(self, args: list[str]):
-        if len(args) > 1:
-            print("Usage: lox [script]")
-            sys.exit(64)
-        elif len(args) == 1:
-            self.runFile(args[0])
-        else:
-            self.runPrompt()
+        if len(args) > 1:    print("Usage: lox [script]"); sys.exit(64)
+        elif len(args) == 1: self.runFile(args[0])
+        else:                self.runPrompt()
 
     def runFile(self, path: Path):
         with open(path) as f: self.run(f.read())
