@@ -3,22 +3,18 @@ from my_token import Token
 from expr import *
 from stmt import *
 
-class ParseError(Exception):
-    pass
+class ParseError(Exception): pass
 
 class Parser:
     def __init__(self, lox_instance, tokens: list[Token]):
-        self.lox = lox_instance
-        self.tokens = tokens
-        self.current = 0
+        self.lox,self.tokens,self.current = lox_instance,tokens,0
 
     def parse(self) -> [Expr]:
         stmts = []
         while not self.is_at_end(): stmts.append(self.declaration())
         return stmts
 
-    def expression(self) -> Expr:
-        return self.assignment()
+    def expression(self) -> Expr: return self.assignment()
     
     def declaration(self) -> Stmt:
         try:
@@ -49,11 +45,11 @@ class Parser:
         return Class(name, superclass, methods)
 
     def statement(self) -> Stmt:
-        if self.match(TokenType.FOR): return self.for_statement()
-        if self.match(TokenType.IF): return self.if_statement()
-        if self.match(TokenType.PRINT): return self.print_statement()
-        if self.match(TokenType.RETURN): return self.return_statement()
-        if self.match(TokenType.WHILE): return self.while_statement()
+        if self.match(TokenType.FOR):        return self.for_statement()
+        if self.match(TokenType.IF):         return self.if_statement()
+        if self.match(TokenType.PRINT):      return self.print_statement()
+        if self.match(TokenType.RETURN):     return self.return_statement()
+        if self.match(TokenType.WHILE):      return self.while_statement()
         if self.match(TokenType.LEFT_BRACE): return Block(self.block())
 
         return self.expression_statement()
@@ -62,33 +58,26 @@ class Parser:
         self.consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.")
 
         initializer = None
-        if self.match(TokenType.SEMICOLON):
-            initializer = None
-        elif self.match(TokenType.VAR):
-            initializer = self.var_declaration()
-        else:
-            initializer = self.expression_statement()
+        if self.match(TokenType.SEMICOLON): initializer = None
+        elif self.match(TokenType.VAR):     initializer = self.var_declaration()
+        else:                               initializer = self.expression_statement()
         
         condition = None
-        if not self.check(TokenType.SEMICOLON):
-            condition = self.expression()
+        if not self.check(TokenType.SEMICOLON): condition = self.expression()
         self.consume(TokenType.SEMICOLON, "Expect ';' after loop condition.")
 
         increment = None
-        if not self.check(TokenType.RIGHT_PAREN):
-            increment = self.expression()
+        if not self.check(TokenType.RIGHT_PAREN): increment = self.expression()
         self.consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.")
 
         body = self.statement()
 
-        if increment is not None:
-            body = Block([body, Expression(increment)])
+        if increment is not None: body = Block([body, Expression(increment)])
         
         if condition is None: condition = Literal(True)
         body = While(condition, body)
 
-        if initializer is not None:
-            body = Block([initializer, body])
+        if initializer is not None: body = Block([initializer, body])
         
         return body
 
@@ -120,8 +109,7 @@ class Parser:
         name = self.consume(TokenType.IDENTIFIER, "Expect variable name.")
 
         initializer = None
-        if self.match(TokenType.EQUAL):
-            initializer = self.expression()
+        if self.match(TokenType.EQUAL): initializer = self.expression()
         
         self.consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.")
         return Var(name, initializer)
@@ -146,8 +134,7 @@ class Parser:
 
         if not self.check(TokenType.RIGHT_PAREN):
             while True:
-                if len(parameters) >= 255:
-                    self.error(self.peek(), "Can't have more than 255 parameters.")
+                if len(parameters) >= 255: self.error(self.peek(), "Can't have more than 255 parameters.")
                 
                 parameters.append(self.consume(TokenType.IDENTIFIER, "Expect parameter name."))
 
@@ -328,14 +315,9 @@ class Parser:
         if not self.is_at_end(): self.current += 1
         return self.previous()
     
-    def is_at_end(self) -> bool:
-        return self.peek().type == TokenType.EOF
-    
-    def peek(self) -> Token:
-        return self.tokens[self.current]
-    
-    def previous(self) -> Token:
-        return self.tokens[self.current - 1]
+    def is_at_end(self) -> bool: return self.peek().type == TokenType.EOF
+    def peek(self) -> Token:     return self.tokens[self.current]
+    def previous(self) -> Token: return self.tokens[self.current - 1]
     
     def error(self, token: Token, message: str) -> ParseError:
         self.lox.error(token.line, message, token)
