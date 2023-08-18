@@ -3,8 +3,7 @@ from runtime_error import RuntimeError
 
 class Environment:
     def __init__(self, enclosing = None):
-        self.enclosing: Environment = enclosing
-        self.values: dict[str, object] = {}
+        self.enclosing,self.values = enclosing, {}
 
     def get(self, name: Token) -> object:
         if name.lexeme in self.values:
@@ -17,17 +16,14 @@ class Environment:
 
     def assign(self, name: Token, value: object):
         if name.lexeme in self.values:
-            self.values[name.lexeme] = value
-            return
+            self.values[name.lexeme] = value; return
         
         if self.enclosing is not None:
-            self.enclosing.assign(name, value)
-            return
+            self.enclosing.assign(name, value); return
 
         raise RuntimeError(name, f"Undefined variable '{name.lexeme}'.")
 
-    def define(self, name: str, value: object):
-        self.values[name] = value
+    def define(self, name: str, value: object): self.values[name] = value
     
     def ancestor(self, distance: int):
         environment = self
