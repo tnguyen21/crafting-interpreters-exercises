@@ -1,7 +1,5 @@
-from expr import Visitor as ExprVisitor
-from stmt import Visitor as StmtVisitor
-from expr import Expr
-from stmt import Stmt
+from expr import Expr, Visitor as ExprVisitor
+from stmt import Stmt, Visitor as StmtVisitor
 from enum import Enum
 from runtime_error import RuntimeError
 
@@ -18,10 +16,7 @@ class ClassType(Enum):
 
 class Resolver(ExprVisitor, StmtVisitor):
     def __init__(self, interpreter):
-        self.interpreter = interpreter
-        self.scopes = []
-        self.current_function = FunctionType.NONE
-        self.current_class = ClassType.NONE
+        self.interpreter,self.scopes,self.current_function,self.current_class = interpreter,[],FunctionType.NONE,ClassType.NONE
     
     def visit_block(self, stmt):
         self.begin_scope()
@@ -98,8 +93,7 @@ class Resolver(ExprVisitor, StmtVisitor):
     
     def visit_call(self, expr):
         self.resolve(expr.callee)
-        for argument in expr.arguments:
-            self.resolve(argument)
+        for argument in expr.arguments: self.resolve(argument)
     
     def visit_get(self, expr): self.resolve(expr.object)
 
