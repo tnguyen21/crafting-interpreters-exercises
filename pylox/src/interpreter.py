@@ -69,12 +69,10 @@ class Interpreter(ExprVisitor, StmtVisitor):
         for argument in expr.arguments:
             arguments.append(self.evaluate(argument))
 
-        if not isinstance(callee, LoxCallable):
-            raise RuntimeError(f'Can only call functions and classes.')
+        if not isinstance(callee, LoxCallable): raise RuntimeError(f'Can only call functions and classes.')
 
         function = callee
-        if len(arguments) != function.arity():
-            raise RuntimeError(f'Expected {function.arity()} arguments but got {len(arguments)}.')
+        if len(arguments) != function.arity(): raise RuntimeError(f'Expected {function.arity()} arguments but got {len(arguments)}.')
 
         return function.call(self, arguments)
 
@@ -85,8 +83,9 @@ class Interpreter(ExprVisitor, StmtVisitor):
 
     def visit_set(self, expr):
         obj = self.evaluate(expr.object)
-        if not isinstance(obj, LoxInstance):
-            raise RuntimeError(f'Only instances have fields.')
+        
+        if not isinstance(obj, LoxInstance): raise RuntimeError(f'Only instances have fields.')
+        
         value = self.evaluate(expr.value)
         obj.set(expr.name, value)
         return value
@@ -96,18 +95,10 @@ class Interpreter(ExprVisitor, StmtVisitor):
         superclass = self.environment.get_at(distance, 'super')
         obj = self.environment.get_at(distance - 1, 'this')
         method = superclass.find_method(expr.method.lexeme)
-        if method is None:
-            raise RuntimeError(f'Undefined property {expr.method.lexeme}.')
+        
+        if method is None: raise RuntimeError(f'Undefined property {expr.method.lexeme}.')
+        
         return method.bind(obj)
-
-    def visit_this(self, expr):
-        return self.look_up_variable(expr.keyword, expr)
-
-    def visit_grouping(self, expr):
-        return self.evaluate(expr.expr)
-
-    def visit_literal(self, expr):
-        return expr.value
     
     def visit_logical(self, expr):
         left = self.evaluate(expr.left)
@@ -127,10 +118,12 @@ class Interpreter(ExprVisitor, StmtVisitor):
             return -right
         elif expr.operator.type == TokenType.BANG:
             return not self.is_truthy(right)
-    
-    def visit_variable(self, expr):
-        return self.look_up_variable(expr.name, expr)
 
+    def visit_grouping(self, expr): return self.evaluate(expr.expr)
+    def visit_literal(self, expr):  return expr.value
+    def visit_this(self, expr):     return self.look_up_variable(expr.keyword, expr)
+    def visit_variable(self, expr): return self.look_up_variable(expr.name, expr)
+    
     def look_up_variable(self, name, expr):
         distance = self.locals.get(expr)
         if distance is not None:
@@ -146,14 +139,9 @@ class Interpreter(ExprVisitor, StmtVisitor):
         if isinstance(left, float) and isinstance(right, float): return
         raise RuntimeError(f'Operands must be numbers, not {left.__class__.__name__} and {right.__class__.__name__}')
 
-    def evaluate(self, expr):
-        return expr.accept(self)
-    
-    def execute(self, stmt):
-        stmt.accept(self)
-    
-    def resolve(self, expr, depth):
-        self.locals[expr] = depth
+    def evaluate(self, expr): return expr.accept(self)
+    def execute(self, stmt):  stmt.accept(self)
+    def resolve(self, expr, depth): self.locals[expr] = depth
     
     def execute_block(self, statements, environment):
         previous = self.environment
@@ -190,8 +178,7 @@ class Interpreter(ExprVisitor, StmtVisitor):
 
         self.environment.assign(stmt.name, klass)
 
-    def visit_expression(self, stmt):
-        self.evaluate(stmt.expr)
+    def visit_expression(self, stmt): self.evaluate(stmt.expr)
 
     def visit_function(self, stmt):
         function = LoxFunction(stmt, self.environment)
