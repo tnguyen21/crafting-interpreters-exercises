@@ -1,7 +1,6 @@
 class LoxInstance:
     def __init__(self, klass):
-        self.klass = klass
-        self.fields = {}
+        self.klass,self.fields = klass, {}
     
     def __str__(self): return self.klass.name + " instance"
 
@@ -14,5 +13,4 @@ class LoxInstance:
         
         raise RuntimeError(name, "Undefined property '" + name.lexeme + "'.")
 
-    def set(self, name, value):
-        self.fields[name.lexeme] = value
+    def set(self, name, value): self.fields[name.lexeme] = value
