@@ -1,7 +1,7 @@
 package main
 
 type Parser struct {
-	tokens []Token
+	tokens  []Token
 	current int
 }
 
@@ -140,7 +140,7 @@ func (p *Parser) peek() Token {
 }
 
 func (p *Parser) previous() Token {
-	return p.tokens[p.current - 1]
+	return p.tokens[p.current-1]
 }
 
 func (p *Parser) synchronize() {

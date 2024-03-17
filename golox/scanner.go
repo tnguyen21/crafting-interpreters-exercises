@@ -3,30 +3,30 @@ package main
 import "strconv"
 
 var keywords = map[string]int{
-	"and": AND,
-	"class": CLASS,
-	"else": ELSE,
-	"false": FALSE,
-	"for": FOR,
-	"fun": FUN,
-	"if": IF,
-	"nil": NIL,
-	"or": OR,
-	"print": PRINT,
+	"and":    AND,
+	"class":  CLASS,
+	"else":   ELSE,
+	"false":  FALSE,
+	"for":    FOR,
+	"fun":    FUN,
+	"if":     IF,
+	"nil":    NIL,
+	"or":     OR,
+	"print":  PRINT,
 	"return": RETURN,
-	"super": SUPER,
-	"this": THIS,
-	"true": TRUE,
-	"var": VAR,
-	"while": WHILE,
+	"super":  SUPER,
+	"this":   THIS,
+	"true":   TRUE,
+	"var":    VAR,
+	"while":  WHILE,
 }
 
 type Scanner struct {
-	source string
-	tokens []Token
-	start int
+	source  string
+	tokens  []Token
+	start   int
 	current int
-	line int
+	line    int
 }
 
 func (s *Scanner) scanTokens() {
@@ -147,7 +147,7 @@ func (s *Scanner) string() {
 		return
 	}
 	s.advance()
-	value := s.source[s.start+1:s.current-1]
+	value := s.source[s.start+1 : s.current-1]
 	s.addTokenLiteral(STRING, value)
 }
 

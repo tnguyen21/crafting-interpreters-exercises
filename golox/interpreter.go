@@ -5,13 +5,12 @@ import (
 	"strings"
 )
 
-type Interpreter struct {}
+type Interpreter struct{}
 
 func (i *Interpreter) interpret(expr Expr) {
 	value := i.Evaluate(expr)
 	fmt.Println(stringify(value))
 }
-	
 
 func (i *Interpreter) Evaluate(expr Expr) interface{} {
 	return expr.Accept(i)
@@ -61,7 +60,7 @@ func (i *Interpreter) VisitBinary(expr Binary) interface{} {
 	case EQUAL_EQUAL:
 		return isEqual(left, right)
 	}
-	
+
 	return nil
 }
 
@@ -111,7 +110,7 @@ func stringify(object interface{}) string {
 	if object == nil {
 		return "nil"
 	}
-	if _, ok := object.(float64); ok{
+	if _, ok := object.(float64); ok {
 		text := fmt.Sprintf("%v", object)
 		if strings.HasSuffix(text, ".0") {
 			text = text[:len(text)-2]
@@ -122,7 +121,7 @@ func stringify(object interface{}) string {
 }
 
 func checkNumberOperand(operator Token, operand interface{}) {
-	if _, ok := operand.(float64); ok{
+	if _, ok := operand.(float64); ok {
 		return
 	}
 	panic(fmt.Sprintf("%s operand must be a number.", operator.Lexeme))
