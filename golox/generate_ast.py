@@ -8,11 +8,11 @@ def define_ast(
         f.write("package main\n\n")
         
         f.write("type Expr interface {\n")
-        f.write("    Accept(ExprVisitor) (interface{}, error)\n}\n\n")
+        f.write("    Accept(ExprVisitor) interface{}\n}\n\n")
         f.write("type ExprVisitor interface {\n")
         for type in types:
             class_name = type.split("=")[0].strip()
-            f.write(f"    Visit{class_name}(expr *{class_name})"+" interface{}\n")
+            f.write(f"    Visit{class_name}(expr {class_name})"+" interface{}\n")
         f.write("}\n\n")
 
         for type in types:
@@ -31,15 +31,15 @@ def define_type(
     for name, type in names_type_tuples:
         f.write(f"    {name.strip()} {type.strip()}\n")
     f.write("}\n\n")
-    f.write(f"func (expr *{class_name}) Accept(visitor ExprVisitor)"+"interface{} {\n")
+    f.write(f"func (expr {class_name}) Accept(visitor ExprVisitor)"+"interface{} {\n")
     f.write(f"    return visitor.Visit{class_name}(expr)\n")
     f.write("}\n\n")
 
 
 if __name__ == "__main__":
     define_ast("expr", [
-        "Binary   = left Expr, operator Token, right Expr",
-        "Grouping = expr Expr",
-        "Literal  = value object",
-        "Unary    = operator Token, right Expr",
+        "Binary   = Left Expr, Operator Token, Right Expr",
+        "Grouping = Expression Expr",
+        "Literal  = Value interface{}",
+        "Unary    = Operator Token, Right Expr",
     ])
