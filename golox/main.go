@@ -7,6 +7,7 @@ import (
 )
 
 var hadError = false
+var hadRuntimeError = false
 
 func main() {
 	args := os.Args[1:]
@@ -29,6 +30,9 @@ func runFile(path string) {
 	run(string(contents))
 	if hadError {
 		os.Exit(65)
+	}
+	if hadRuntimeError {
+		os.Exit(70)
 	}
 }
 
@@ -55,15 +59,14 @@ func run(source string) {
 	if hadError {
 		return
 	}
-	
-	ap := AstPrinter{}
-	fmt.Println(ap.Print(expr))
+
+	interpreter := Interpreter{}
+	interpreter.interpret(expr)	
 }
 
 func error(line int, message string) {
 	report(line, "", message)
 }
-
 
 func report(line int, where string, message string) {
 	fmt.Printf("[line %d] Error %s: %s\n", line, where, message)
