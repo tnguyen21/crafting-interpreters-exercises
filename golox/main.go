@@ -48,17 +48,26 @@ func runPrompt() {
 func run(source string) {
 	scanner := Scanner{source: source, tokens: []Token{}, start: 0, current: 0, line: 1}
 	scanner.scanTokens()
-	
-	for _, token := range scanner.tokens {
-		fmt.Println(token)
+
+	parser := Parser{tokens: scanner.tokens, current: 0}
+	expr := parser.parse()
+
+	if hadError {
+		return
 	}
+	
+	ap := AstPrinter{}
+	fmt.Println(ap.Print(expr))
 }
 
 func error(line int, message string) {
 	report(line, "", message)
 }
 
+
 func report(line int, where string, message string) {
 	fmt.Printf("[line %d] Error %s: %s\n", line, where, message)
 	hadError = true
 }
+
+
