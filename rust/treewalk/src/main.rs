@@ -5,7 +5,7 @@ use std::process;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    
+
     if args.len() > 2 {
         eprintln!("Usage: treewalk [script]");
         process::exit(64);
@@ -32,20 +32,20 @@ fn run_prompt() -> io::Result<()> {
     let stdin = io::stdin();
     let mut reader = stdin.lock();
     let mut line = String::new();
-    
+
     loop {
         print!("> ");
         io::stdout().flush()?;
-        
+
         line.clear();
         let bytes_read = reader.read_line(&mut line)?;
-        
+
         if bytes_read == 0 {
             break; // EOF
         }
-        
+
         // run(line.trim());
     }
-    
+
     Ok(())
 }
