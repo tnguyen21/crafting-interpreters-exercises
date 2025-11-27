@@ -1,0 +1,1 @@
+- this is a tree-walk interpreter for lox written in rust, following along Robert Nystrom's https://craftinginterpreters.com/a-tree-walk-interpreter.html
